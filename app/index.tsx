@@ -1,15 +1,19 @@
-import { Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { Pressable, Text, View } from "react-native";
+import { styles } from "../styles/indexStyles";
 
 export default function Index() {
+  const router = useRouter();
+
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Hello World!</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Welcome to MyApp</Text>
+      <Pressable 
+        style={styles.button}
+        onPress={() => router.push("/login")}
+      >
+        <Text style={styles.buttonText}>Go to Login</Text>
+      </Pressable>
     </View>
   );
 }
