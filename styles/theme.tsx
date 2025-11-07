@@ -1,0 +1,59 @@
+export const colors = {
+  primaryText: '#2F2F2F', //font
+  secondaryText: '#fff',
+  tertiaryText: '8D8D8D',
+  primaryButton: '#2F2F2F', //button
+  primaryBg: '#fff', //original bgs
+  white: '#fff', //greys and whites
+  offwhite: '#E4E4E4',
+  lightGrey: '#C9C9C9',
+  darkGrey: '8D8D8D',
+};
+
+export const spacing = {
+  xs: 4,
+  sm: 8,
+  md: 16,
+  lg: 24,
+  xl: 32,
+};
+
+export const typography = {
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold' as const,
+  },
+  body: {
+    fontSize: 16,
+    fontWeight: '400' as const,
+  },
+  button: {
+    fontSize: 16,
+    fontWeight: '600' as const,
+  },
+};
+
+export const mixins = {
+  centerContent: {
+    justifyContent: 'center' as const,
+    alignItems: 'center' as const,
+  },
+  button: {
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  primaryButton: {
+    backgroundColor: colors.primaryButton,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3, // for Android
+  },
+};

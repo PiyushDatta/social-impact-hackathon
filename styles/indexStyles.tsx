@@ -1,11 +1,12 @@
 import { StyleSheet } from 'react-native';
+import { colors } from './theme';
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: colors.primaryBg,
   },
   title: {
     fontSize: 24,
@@ -13,13 +14,13 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.primaryButton,
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 8,
   },
   buttonText: {
-    color: '#fff',
+    color: colors.secondaryText,
     fontSize: 16,
     fontWeight: '600',
   },
