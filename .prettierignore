@@ -1,0 +1,11 @@
+node_modules
+build
+dist
+android
+ios
+.vscode
+.env
+*.log
+.DS_Store
+coverage
+.cache

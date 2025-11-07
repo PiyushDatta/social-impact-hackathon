@@ -1,22 +1,22 @@
-import { useRouter } from "expo-router";
-import { useState } from "react";
-import { Pressable, Text, TextInput, View } from "react-native";
-import { styles } from "../styles/loginStyles";
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { Pressable, Text, TextInput, View } from 'react-native';
+import { styles } from '../styles/loginStyles';
 
 export default function Login() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    console.log("Login with:", email, password);
-    router.replace("/tabs");
+    console.log('Login with:', email, password);
+    router.replace('/tabs');
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
-      
+
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -25,7 +25,7 @@ export default function Login() {
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      
+
       <TextInput
         style={styles.input}
         placeholder="Password"
@@ -33,7 +33,7 @@ export default function Login() {
         onChangeText={setPassword}
         secureTextEntry
       />
-      
+
       <Pressable style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
       </Pressable>
