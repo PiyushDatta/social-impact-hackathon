@@ -1,9 +1,10 @@
 import { StyleSheet } from 'react-native';
+import { colors } from './theme';
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.primaryBg,
   },
   content: {
     padding: 20,
@@ -19,7 +20,7 @@ export const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.primaryButton,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 15,
@@ -36,7 +37,7 @@ export const styles = StyleSheet.create({
   },
   email: {
     fontSize: 14,
-    color: '#666',
+    color: colors.darkGrey,
   },
   section: {
     backgroundColor: '#fff',
@@ -52,19 +53,19 @@ export const styles = StyleSheet.create({
   settingItem: {
     paddingVertical: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: colors.darkGrey,
   },
   settingText: {
     fontSize: 16,
   },
   logoutButton: {
-    backgroundColor: '#FF3B30',
+    backgroundColor: colors.primaryButton,
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
   },
   logoutText: {
-    color: '#fff',
+    color: colors.secondaryText,
     fontSize: 16,
     fontWeight: '600',
   },

@@ -1,9 +1,10 @@
 import { StyleSheet } from 'react-native';
+import { colors } from './theme';
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.primaryBg,
   },
   content: {
     padding: 20,
@@ -15,11 +16,11 @@ export const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
+    color: colors.tertiaryText,
     marginBottom: 20,
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.primaryBg,
     padding: 20,
     borderRadius: 12,
     shadowColor: '#000',
@@ -35,10 +36,10 @@ export const styles = StyleSheet.create({
   },
   cardText: {
     fontSize: 14,
-    color: '#666',
+    color: colors.tertiaryText,
   },
   cardButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.primaryButton,
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,
@@ -46,7 +47,7 @@ export const styles = StyleSheet.create({
     marginTop: 10,
   },
   cardButtonText: {
-    color: '#fff',
+    color: colors.secondaryText,
     fontSize: 16,
     fontWeight: '600',
   },

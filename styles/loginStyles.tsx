@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { colors } from './theme';
 
 export const styles = StyleSheet.create({
   container: {
@@ -6,7 +7,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: colors.primaryBg,
   },
   title: {
     fontSize: 28,
@@ -25,7 +26,7 @@ export const styles = StyleSheet.create({
   },
   button: {
     width: '100%',
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.primaryButton,
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
