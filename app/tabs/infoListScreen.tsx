@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Button, ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import InfoCard from '../../components/infoCard';
+import { styles } from '../../styles/infoCardStyles';
 
 export default function InfoListScreen() {
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
@@ -23,11 +24,16 @@ export default function InfoListScreen() {
         ))}
       </ScrollView>
 
-      <Button
-        title="Continue"
+      <Pressable
+        style={[
+          styles.button,
+          selectedCards.length === 0 && { opacity: 0.5 }, // ✅ visual "disabled" effect
+        ]}
         disabled={selectedCards.length === 0}
         onPress={() => console.log('Continue pressed')}
-      />
+      >
+        <Text style={styles.buttonText}>Have AI Call These Services</Text>
+      </Pressable>
     </View>
   );
 }

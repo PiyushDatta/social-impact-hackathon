@@ -1,13 +1,18 @@
 export const colors = {
-  primaryText: '#2F2F2F', //font
+  //text
+  primaryText: '#2F2F2F',
   secondaryText: '#fff',
   tertiaryText: '8D8D8D',
-  primaryButton: '#2F2F2F', //button
-  primaryBg: '#fff', //original bgs
-  white: '#fff', //greys and whites
+  //buttons
+  primaryButton: '#2F2F2F',
+  //original bgs
+  primaryBg: '#fff',
+  //shades
+  white: '#fff',
   offwhite: '#E4E4E4',
   lightGrey: '#C9C9C9',
   darkGrey: '8D8D8D',
+  black: '#000',
 };
 
 export const spacing = {
