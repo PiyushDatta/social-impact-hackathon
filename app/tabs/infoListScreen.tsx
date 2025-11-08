@@ -6,6 +6,7 @@ import { styles } from '../../styles/infoCardStyles';
 
 export default function InfoListScreen() {
   const { handleApiCall } = useElevenLabsCall();
+  const defaultPhoneNumber = process.env.EXPO_PUBLIC_DEFAULT_PHONE_NUMBER!;
 
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
 
@@ -30,7 +31,7 @@ export default function InfoListScreen() {
       <Pressable
         style={[styles.button, selectedCards.length === 0 && { opacity: 0.5 }]}
         disabled={selectedCards.length === 0}
-        onPress={handleApiCall}
+        onPress={() => handleApiCall(defaultPhoneNumber)}
       >
         <Text style={styles.buttonText}>Have AI Call These Services</Text>
       </Pressable>

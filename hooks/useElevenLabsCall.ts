@@ -2,23 +2,33 @@ import { useCallback } from 'react';
 import { Alert, Platform } from 'react-native';
 
 export const useElevenLabsCall = () => {
-  const handleApiCall = useCallback(async () => {
+  const handleApiCall = useCallback(async (phoneNumber: string) => {
     try {
-      console.log('Making API call to ElevenLabs...');
-      const ELEVEN_LABS_API_KEY = process.env.EXPO_PUBLIC_ELEVEN_LABS_API_KEY;
-      const PHONE_NUMBER = process.env.EXPO_PUBLIC_PHONE_NUMBER;
-      const AGENT_ID = process.env.EXPO_PUBLIC_AGENT_ID;
-      const AGENT_PHONE_NUMBER_ID = process.env.EXPO_PUBLIC_AGENT_PHONE_NUMBER_ID;
-
-      if (!ELEVEN_LABS_API_KEY || !PHONE_NUMBER || !AGENT_ID || !AGENT_PHONE_NUMBER_ID) {
-        throw new Error('Missing required environment variables. Check your .env file.');
+      if (!phoneNumber) {
+        throw new Error('Phone number is required');
       }
-      const errorMessage = 'Not implemented yet';
+      console.log('Making API call to backend server...');
+      const BASE_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'https://your-cloud-run-url.run.app';
+      const response = await fetch(`${BASE_URL}/call`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ phoneNumber }),
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Backend error: ${response.status} - ${errorText}`);
+      }
+      const data = await response.json();
+      console.log('Call response:', data);
+      const successMessage = `Call initiated! Conversation ID: ${data.conversationId}`;
       if (Platform.OS === 'web') {
-        alert(`Error: ${errorMessage}`);
+        alert(successMessage);
       } else {
-        Alert.alert('Error', errorMessage);
+        Alert.alert('Success', successMessage);
       }
+
     } catch (error) {
       console.error('API call failed:', error);
       const errorMessage = error instanceof Error ? error.message : 'API call failed';
