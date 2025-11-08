@@ -11,10 +11,10 @@ export default function SearchBar({ searchQuery, setSearchQuery }: SearchBarProp
     <View style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder="Search by title or participant..."
+        placeholder="Search conversations"
         value={searchQuery}
         onChangeText={setSearchQuery}
-        clearButtonMode="never" // iOS: disable native clear button
+        clearButtonMode="never"
       />
 
       {searchQuery.length > 0 && (

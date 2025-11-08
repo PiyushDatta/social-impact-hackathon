@@ -1,24 +1,18 @@
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import ConversationCard from '../../components/conversationCard';
 import FilterBar from '../../components/filterBar';
 import SearchBar from '../../components/searchBar';
-import { transcripts } from '../../data/transcriptData';
+import { Transcript, transcripts } from '../../data/transcriptData';
 import { styles } from '../../styles/transcriptStyles';
-
-interface Transcript {
-  id: string;
-  title: string;
-  status: 'In Progress' | 'Completed';
-  summary: string;
-}
 
 interface Filters {
   status: 'All' | 'In Progress' | 'Completed';
 }
 
 export default function TranscriptPage() {
-  const [selectedTranscript, setSelectedTranscript] = useState<Transcript | null>(null);
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [filters, setFilters] = useState<Filters>({ status: 'All' });
 
@@ -29,21 +23,21 @@ export default function TranscriptPage() {
     return matchesSearch && matchesStatus;
   });
 
+  const handleTranscriptPress = (transcript: Transcript) => {
+    router.push(`/transcriptDetail?id=${transcript.id}`);
+  };
+
   return (
     <View style={styles.page}>
-      <View>
-        <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-      </View>
-
+      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       <FilterBar filters={filters} setFilters={setFilters} />
-
       <ScrollView contentContainerStyle={styles.container}>
         {filteredTranscripts.length > 0 ? (
           filteredTranscripts.map(transcript => (
             <ConversationCard
               key={transcript.id}
               transcript={transcript}
-              onPress={() => setSelectedTranscript(transcript)}
+              onPress={() => handleTranscriptPress(transcript)}
             />
           ))
         ) : (
@@ -52,15 +46,6 @@ export default function TranscriptPage() {
           </Text>
         )}
       </ScrollView>
-
-      {selectedTranscript && (
-        <View style={styles.overlay}>
-          <Text style={styles.overlayTitle}>{selectedTranscript.title}</Text>
-          <Pressable onPress={() => setSelectedTranscript(null)}>
-            <Text style={styles.closeButtonText}>Close</Text>
-          </Pressable>
-        </View>
-      )}
     </View>
   );
 }

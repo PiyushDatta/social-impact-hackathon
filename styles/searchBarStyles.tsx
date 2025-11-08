@@ -1,20 +1,21 @@
 import { StyleSheet } from 'react-native';
+import { colors } from './theme';
 
 export const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    alignItems: 'center',
     marginVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: '#f1f1f1',
+    backgroundColor: colors.offwhite,
     borderRadius: 12,
+    alignItems: 'center',
+    width: '100%',
   },
   input: {
-    flex: 1,
     fontSize: 14,
     paddingVertical: 8,
     paddingHorizontal: 12,
-    color: '#333',
+    color: colors.tertiaryText,
   },
   clearButton: {
     marginLeft: 8,
@@ -25,6 +26,6 @@ export const styles = StyleSheet.create({
   },
   clearButtonText: {
     fontSize: 18,
-    color: '#555',
+    color: colors.tertiaryText,
   },
 });

@@ -1,10 +1,11 @@
 import { StyleSheet } from 'react-native';
+import { colors } from './theme';
 
 export const styles = StyleSheet.create({
   container: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    backgroundColor: '#f7f7f7',
+    paddingVertical: 6,
+    alignSelf: 'flex-start',
+    justifyContent: 'center',
   },
   buttonRow: {
     flexDirection: 'row',
@@ -14,13 +15,13 @@ export const styles = StyleSheet.create({
   filterButton: {
     paddingVertical: 6,
     paddingHorizontal: 12,
-    borderRadius: 20,
+    borderRadius: 4,
     backgroundColor: '#ddd',
     marginRight: 8,
     marginBottom: 8,
   },
   activeButton: {
-    backgroundColor: '#A3C6B8', // or match status color
+    backgroundColor: colors.primaryButton,
   },
   filterText: {
     fontSize: 14,
@@ -34,11 +35,10 @@ export const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 20,
-    backgroundColor: '#c6c6c6',
     alignSelf: 'flex-start',
   },
   clearButtonText: {
     fontSize: 14,
-    color: '#333',
+    color: colors.primaryText,
   },
 });

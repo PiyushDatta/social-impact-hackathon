@@ -2,7 +2,7 @@ export const colors = {
   //text
   primaryText: '#2F2F2F',
   secondaryText: '#fff',
-  tertiaryText: '8D8D8D',
+  tertiaryText: '#8D8D8D',
   //buttons
   primaryButton: '#2F2F2F',
   //original bgs
@@ -11,7 +11,7 @@ export const colors = {
   white: '#fff',
   offwhite: '#E4E4E4',
   lightGrey: '#C9C9C9',
-  darkGrey: '8D8D8D',
+  darkGrey: '#8D8D8D',
   black: '#000',
 };
 
