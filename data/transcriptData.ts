@@ -1,4 +1,7 @@
 // data/transcriptData.ts
+import { useEffect, useState } from 'react';
+import { useServerApi } from '../hooks/useServerApi';
+
 export interface Message {
   id: string;
   speaker: 'user' | 'agent' | 'system';
@@ -17,6 +20,7 @@ export interface Transcript {
   participants?: string[];
 }
 
+// Static fallback data (only used if fetch fails)
 export const transcripts: Transcript[] = [
   {
     id: '1',
@@ -142,3 +146,57 @@ export const transcripts: Transcript[] = [
     ],
   },
 ];
+
+/**
+ * Hook to dynamically fetch transcripts only for this device.
+ * Returns transcripts array and loading state.
+ */
+export function useTranscripts() {
+  const [transcripts, setTranscripts] = useState<Transcript[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const { fetchSavedConversationDetails } = useServerApi();
+
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      try {
+        const details = await fetchSavedConversationDetails();
+        const mapped: Transcript[] = details
+          .map(d => {
+            const t = d.transcript;
+            if (!t) return null;
+            const messages: Message[] = (t.transcript || []).map((m, idx) => ({
+              id: `m${idx + 1}`,
+              speaker: m.role as 'user' | 'agent' | 'system',
+              text: m.message,
+              timestamp: m.timestamp || '',
+            }));
+            return {
+              id: t.conversationId,
+              title: `Conversation ${t.conversationId}`,
+              status: 'Completed',
+              lastUpdated: t.metadata?.endTime
+                ? new Date(t.metadata.endTime * 1000).toISOString().split('T')[0]
+                : '',
+              summary: messages[0]?.text || '',
+              messages,
+              duration: t.metadata?.duration
+                ? `${Math.floor(t.metadata.duration / 60)}:${t.metadata.duration % 60}`
+                : undefined,
+              participants: [],
+            };
+          })
+          .filter(Boolean) as Transcript[];
+
+        setTranscripts(mapped);
+      } catch (err) {
+        console.error('Failed to fetch device transcripts', err);
+        setTranscripts([]);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [fetchSavedConversationDetails]);
+
+  return { transcripts, loading };
+}

@@ -4,7 +4,7 @@ import { ScrollView, Text, View } from 'react-native';
 import ConversationCard from '../../components/conversationCard';
 import FilterBar from '../../components/filterBar';
 import SearchBar from '../../components/searchBar';
-import { Transcript, transcripts } from '../../data/transcriptData';
+import { Transcript, useTranscripts } from '../../data/transcriptData';
 import { styles } from '../../styles/transcriptStyles';
 
 interface Filters {
@@ -15,7 +15,8 @@ export default function TranscriptPage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [filters, setFilters] = useState<Filters>({ status: 'All' });
-
+  // Use the hook to fetch transcripts
+  const { transcripts, loading } = useTranscripts();
   const filteredTranscripts = transcripts.filter(transcript => {
     const query = searchQuery.toLowerCase();
     const matchesSearch = searchQuery === '' || transcript.title.toLowerCase().includes(query);
@@ -32,7 +33,9 @@ export default function TranscriptPage() {
       <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       <FilterBar filters={filters} setFilters={setFilters} />
       <ScrollView contentContainerStyle={styles.container}>
-        {filteredTranscripts.length > 0 ? (
+        {loading ? (
+          <Text style={styles.noResults}>Loading transcripts...</Text>
+        ) : filteredTranscripts.length > 0 ? (
           filteredTranscripts.map(transcript => (
             <ConversationCard
               key={transcript.id}

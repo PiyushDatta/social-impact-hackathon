@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import InfoCard from '../../components/infoCard';
-import { useElevenLabsCall } from '../../hooks/useElevenLabsCall';
+import { useServerApi } from '../../hooks/useServerApi';
 import { styles } from '../../styles/infoCardStyles';
 
 export default function InfoListScreen() {
-  const { handleApiCall } = useElevenLabsCall();
+  const { initiateCall } = useServerApi();
   const defaultPhoneNumber = process.env.EXPO_PUBLIC_DEFAULT_PHONE_NUMBER!;
 
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
@@ -31,7 +31,7 @@ export default function InfoListScreen() {
       <Pressable
         style={[styles.button, selectedCards.length === 0 && { opacity: 0.5 }]}
         disabled={selectedCards.length === 0}
-        onPress={() => handleApiCall(defaultPhoneNumber)}
+        onPress={() => initiateCall(defaultPhoneNumber)}
       >
         <Text style={styles.buttonText}>Have AI Call These Services</Text>
       </Pressable>

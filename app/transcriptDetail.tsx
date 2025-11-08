@@ -1,12 +1,22 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ScrollView, Text, View } from 'react-native';
-import { transcripts } from '../data/transcriptData';
+import { useTranscripts } from '../data/transcriptData';
 import { styles } from '../styles/transcriptDetailStyles';
 
 export default function TranscriptDetail() {
   const params = useLocalSearchParams();
   const router = useRouter();
   const transcriptId = params.id as string;
+
+  const { transcripts, loading } = useTranscripts();
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading transcript...</Text>
+      </View>
+    );
+  }
 
   const transcript = transcripts.find(t => t.id === transcriptId);
 
