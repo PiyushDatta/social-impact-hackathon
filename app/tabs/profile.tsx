@@ -1,13 +1,15 @@
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
+import IntakeFormModal from '../../components/intakeFormModal';
 import { styles } from '../../styles/profileStyles';
 
 export default function Profile() {
   const router = useRouter();
+  const [isModalVisible, setModalVisible] = useState(false);
 
-  const handleLogout = () => {
-    router.replace('/login');
-  };
+  const handleLogout = () => router.replace('/login');
+  const toggleModal = () => setModalVisible(!isModalVisible);
 
   return (
     <ScrollView style={styles.container}>
@@ -22,6 +24,10 @@ export default function Profile() {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Settings</Text>
+
+          <Pressable style={styles.globalButton} onPress={toggleModal}>
+            <Text style={styles.globalButtonText}>Global Intake Form</Text>
+          </Pressable>
 
           <Pressable style={styles.settingItem}>
             <Text style={styles.settingText}>Edit Profile</Text>
@@ -44,6 +50,9 @@ export default function Profile() {
           <Text style={styles.logoutText}>Logout</Text>
         </Pressable>
       </View>
+
+      {/* Modal Component */}
+      <IntakeFormModal visible={isModalVisible} onClose={toggleModal} />
     </ScrollView>
   );
 }

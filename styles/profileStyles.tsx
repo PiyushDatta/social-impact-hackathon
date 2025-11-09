@@ -69,4 +69,15 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  globalButton: {
+    backgroundColor: colors.primaryButton,
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  globalButtonText: {
+    color: colors.secondaryText,
+    fontSize: 16,
+    fontWeight: '600',
+  },
 });
