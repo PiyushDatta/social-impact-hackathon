@@ -37,4 +37,57 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  buttonDisabled: {
+    opacity: 0.6,
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 30,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#ddd',
+  },
+  dividerText: {
+    marginHorizontal: 10,
+    color: '#666',
+    fontSize: 14,
+  },
+  googleButton: {
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  googleButtonText: {
+    color: '#333',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 40,
+  },
+  form: {
+    width: '100%',
+    maxWidth: 400,
+  },
+  errorContainer: {
+    backgroundColor: '#ffebee',
+    borderWidth: 1,
+    borderColor: '#ef5350',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 15,
+  },
+  errorText: {
+    color: '#c62828',
+    fontSize: 14,
+    textAlign: 'center',
+  },
 });
