@@ -48,10 +48,30 @@ type UserProfile = {
   createdAt?: number;
 };
 
+type ProfileData = {
+  userId: string;
+  onboardingComplete?: boolean;
+  createdAt?: number;
+  updatedAt?: number;
+  [key: string]: any;
+};
+
 type AddUserResponse = {
   success: boolean;
   isNewUser: boolean;
   profile: UserProfile;
+  profileData?: ProfileData;
+};
+
+type UpdateProfileResponse = {
+  success: boolean;
+  message: string;
+  profileData: ProfileData;
+};
+
+type GetProfileResponse = {
+  success: boolean;
+  profileData: ProfileData;
 };
 
 /**
@@ -68,6 +88,116 @@ export function useServerApi() {
       await loadConversationIds();
       await loadChatSession();
     })();
+  }, []);
+
+  // ==================== Auth & Profile API ====================
+
+  /**
+   * Add or update a user in the database
+   */
+  const addUser = useCallback(
+    async (profile: {
+      uid: string;
+      email: string;
+      name: string;
+      photo?: string;
+    }): Promise<AddUserResponse> => {
+      if (!profile.uid || !profile.email || !profile.name) {
+        const msg = 'User profile must include uid, email, and name';
+        if (Platform.OS === 'web') alert(msg);
+        else Alert.alert('Error', msg);
+        throw new Error(msg);
+      }
+      setLoading(true);
+      try {
+        const res = await fetch(`${SERVER_URL}/auth/add_user`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(profile),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          const errMsg = data?.error || `Server error: ${res.status}`;
+          if (Platform.OS === 'web') alert(errMsg);
+          else Alert.alert('Error', errMsg);
+          throw new Error(errMsg);
+        }
+        return data as AddUserResponse;
+      } catch (err: any) {
+        console.error('addUser error', err);
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [],
+  );
+
+  /**
+   * Update user profile data
+   */
+  const updateProfile = useCallback(
+    async (userId: string, profileData: Partial<ProfileData>): Promise<ProfileData> => {
+      if (!userId) {
+        const msg = 'userId is required';
+        if (Platform.OS === 'web') alert(msg);
+        else Alert.alert('Error', msg);
+        throw new Error(msg);
+      }
+      setLoading(true);
+      try {
+        const res = await fetch(`${SERVER_URL}/profile`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, profileData }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          const errMsg = data?.error || `Server error: ${res.status}`;
+          if (Platform.OS === 'web') alert(errMsg);
+          else Alert.alert('Error', errMsg);
+          throw new Error(errMsg);
+        }
+        return (data as UpdateProfileResponse).profileData;
+      } catch (err: any) {
+        console.error('updateProfile error', err);
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [],
+  );
+
+  /**
+   * Get user profile data
+   */
+  const getProfile = useCallback(async (userId: string): Promise<ProfileData | null> => {
+    if (!userId) {
+      throw new Error('userId is required');
+    }
+    setLoading(true);
+    try {
+      const res = await fetch(`${SERVER_URL}/profile/${encodeURIComponent(userId)}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (res.status === 404) {
+        // Profile not found - return null
+        return null;
+      }
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const errMsg = data?.error || `Server error: ${res.status}`;
+        throw new Error(errMsg);
+      }
+      return (data as GetProfileResponse).profileData;
+    } catch (err: any) {
+      console.error('getProfile error', err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   // ==================== SecureStoreWrapper helpers ====================
@@ -142,47 +272,6 @@ export function useServerApi() {
     }
   }, []);
 
-  /**
-   * Add or update a user in the database
-   */
-  const addUser = useCallback(
-    async (profile: {
-      uid: string;
-      email: string;
-      name: string;
-      photo?: string;
-    }): Promise<AddUserResponse> => {
-      if (!profile.uid || !profile.email || !profile.name) {
-        const msg = 'User profile must include uid, email, and name';
-        if (Platform.OS === 'web') alert(msg);
-        else Alert.alert('Error', msg);
-        throw new Error(msg);
-      }
-      setLoading(true);
-      try {
-        const res = await fetch(`${SERVER_URL}/auth/add_user`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(profile),
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) {
-          const errMsg = data?.error || `Server error: ${res.status}`;
-          if (Platform.OS === 'web') alert(errMsg);
-          else Alert.alert('Error', errMsg);
-          throw new Error(errMsg);
-        }
-        return data as AddUserResponse;
-      } catch (err: any) {
-        console.error('addUser error', err);
-        throw err;
-      } finally {
-        setLoading(false);
-      }
-    },
-    [],
-  );
-
   // ==================== Call API (Voice) ====================
 
   const initiateCall = useCallback(
@@ -201,16 +290,13 @@ export function useServerApi() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ phoneNumber }),
         });
-
         const data = await res.json().catch(() => ({}));
-
         if (!res.ok) {
           const errMsg = data?.error || `Server error: ${res.status}`;
           if (Platform.OS === 'web') alert(errMsg);
           else Alert.alert('Error', errMsg);
           throw new Error(errMsg);
         }
-
         // Save conversationId locally if server returns it
         if (data?.conversationId) {
           await addConversationId(data.conversationId);
@@ -398,6 +484,9 @@ export function useServerApi() {
     loading,
     // Auth operations
     addUser,
+    // Profile operations
+    updateProfile,
+    getProfile,
     // Voice call storage operations
     loadConversationIds,
     listConversations,

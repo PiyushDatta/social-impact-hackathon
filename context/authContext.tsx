@@ -14,11 +14,21 @@ interface UserProfile {
   photo?: string;
 }
 
+interface ProfileData {
+  userId: string;
+  onboardingComplete?: boolean;
+  createdAt?: number;
+  updatedAt?: number;
+  [key: string]: any; // Allow any additional profile fields
+}
+
 interface AuthContextType {
   isAuthenticated: boolean;
   user: UserProfile | null;
+  profileData: ProfileData | null;
   loginWithGoogle: () => Promise<boolean>;
   logout: () => Promise<void>;
+  updateProfileData: (data: Partial<ProfileData>) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -26,14 +36,16 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const AUTH_TOKEN_KEY = 'doorwai_auth_token';
 const USER_DATA_KEY = 'doorwai_user_data';
+const PROFILE_DATA_KEY = 'doorwai_profile_data';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<UserProfile | null>(null);
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Import addUser from useServerApi
-  const { addUser } = useServerApi();
+  // Import API functions from useServerApi
+  const { addUser, updateProfile, getProfile } = useServerApi();
 
   // Configure Google Auth (id token flow)
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
@@ -70,9 +82,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const token = await SecureStoreWrapper.getItemAsync(AUTH_TOKEN_KEY);
       const userData = await SecureStoreWrapper.getItemAsync(USER_DATA_KEY);
+      const storedProfileData = await SecureStoreWrapper.getItemAsync(PROFILE_DATA_KEY);
+
       if (token && userData) {
+        const parsedUser = JSON.parse(userData);
         setIsAuthenticated(true);
-        setUser(JSON.parse(userData));
+        setUser(parsedUser);
+
+        // Load profile data from local storage
+        if (storedProfileData) {
+          setProfileData(JSON.parse(storedProfileData));
+        }
+
+        // Fetch fresh profile data from server
+        try {
+          const freshProfile = await getProfile(parsedUser.uid);
+          if (freshProfile) {
+            setProfileData(freshProfile);
+            await SecureStoreWrapper.setItemAsync(PROFILE_DATA_KEY, JSON.stringify(freshProfile));
+          }
+        } catch (error) {
+          console.warn('Could not fetch fresh profile data:', error);
+          // Continue with cached data
+        }
       }
     } catch (error) {
       console.error('Error checking auth status:', error);
@@ -124,6 +156,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const result = await addUser(userProfile);
         console.log('User added to database:', result.isNewUser ? 'New user' : 'Existing user');
+
         // Use the profile returned from the server (in case it was updated)
         const serverProfile: UserProfile = {
           uid: result.profile.uid,
@@ -131,6 +164,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           name: result.profile.name,
           photo: result.profile.photo,
         };
+
+        // Store profile data from server response
+        if (result.profileData) {
+          setProfileData(result.profileData);
+          await SecureStoreWrapper.setItemAsync(
+            PROFILE_DATA_KEY,
+            JSON.stringify(result.profileData),
+          );
+        }
+
         // Save token and user data locally
         await SecureStoreWrapper.setItemAsync(AUTH_TOKEN_KEY, idToken);
         await SecureStoreWrapper.setItemAsync(USER_DATA_KEY, JSON.stringify(serverProfile));
@@ -159,12 +202,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const updateProfileData = async (data: Partial<ProfileData>) => {
+    if (!user) {
+      throw new Error('User must be authenticated to update profile');
+    }
+    try {
+      // Update profile on server
+      const updatedProfile = await updateProfile(user.uid, data);
+      // Update local state
+      setProfileData(updatedProfile);
+      // Update local storage
+      await SecureStoreWrapper.setItemAsync(PROFILE_DATA_KEY, JSON.stringify(updatedProfile));
+    } catch (error) {
+      console.error('Error updating profile data:', error);
+      throw error;
+    }
+  };
+
   const logout = async () => {
     try {
       await SecureStoreWrapper.deleteItemAsync(AUTH_TOKEN_KEY);
       await SecureStoreWrapper.deleteItemAsync(USER_DATA_KEY);
+      await SecureStoreWrapper.deleteItemAsync(PROFILE_DATA_KEY);
       setIsAuthenticated(false);
       setUser(null);
+      setProfileData(null);
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -175,8 +237,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       value={{
         isAuthenticated,
         user,
+        profileData,
         loginWithGoogle,
         logout,
+        updateProfileData,
         isLoading,
       }}
     >

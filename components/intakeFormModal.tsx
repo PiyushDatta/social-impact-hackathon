@@ -1,7 +1,7 @@
-// IntakeFormModal.tsx
 import { Picker } from '@react-native-picker/picker';
 import { useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   Clipboard,
   Modal,
@@ -13,6 +13,7 @@ import {
   View,
 } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
+import { useAuth } from '../context/authContext';
 import { styles } from '../styles/intakeFormStyles';
 import { SecureStoreWrapper } from '../utils/secureStoreWrapper';
 
@@ -50,6 +51,9 @@ interface FormData {
 }
 
 export default function IntakeFormModal({ visible, onClose }: IntakeFormModalProps) {
+  const { user, profileData, updateProfileData } = useAuth();
+  const [isSaving, setIsSaving] = useState(false);
+
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
@@ -83,13 +87,28 @@ export default function IntakeFormModal({ visible, onClose }: IntakeFormModalPro
 
   useEffect(() => {
     const loadData = async () => {
-      const savedData = await SecureStoreWrapper.getItemAsync('intakeFormData');
-      if (savedData) {
-        setFormData(JSON.parse(savedData));
+      // First, try to load from profile data (server)
+      if (profileData?.intakeFormData) {
+        setFormData(profileData.intakeFormData);
+      } else {
+        // Fall back to local storage
+        const savedData = await SecureStoreWrapper.getItemAsync('intakeFormData');
+        if (savedData) {
+          setFormData(JSON.parse(savedData));
+        }
+      }
+      // Pre-fill user info if available
+      if (user && !profileData?.intakeFormData) {
+        setFormData(prev => ({
+          ...prev,
+          firstName: prev.firstName || user.name.split(' ')[0] || '',
+          lastName: prev.lastName || user.name.split(' ').slice(1).join(' ') || '',
+          email: prev.email || user.email || '',
+        }));
       }
     };
     if (visible) loadData();
-  }, [visible]);
+  }, [visible, user, profileData]);
 
   const handleChange = (key: keyof FormData, value: string) => {
     setFormData(prev => ({ ...prev, [key]: value }));
@@ -130,12 +149,10 @@ END:VCARD`;
     try {
       // Save full data to secure storage
       await SecureStoreWrapper.setItemAsync('intakeFormData', JSON.stringify(formData));
-
       // Generate essential data for QR
       const essentialData = generateEssentialData();
       setQrData(essentialData);
       setShowQRCode(true);
-
       Alert.alert('QR Code Generated', 'You can now scan or copy the data below.');
     } catch (error) {
       console.error(error);
@@ -149,13 +166,30 @@ END:VCARD`;
   };
 
   const handleSubmit = async () => {
+    if (!user) {
+      Alert.alert('Error', 'You must be logged in to save your information.');
+      return;
+    }
     try {
+      setIsSaving(true);
+      // Save to local storage first
       await SecureStoreWrapper.setItemAsync('intakeFormData', JSON.stringify(formData));
+      // Save to Firebase profile
+      await updateProfileData({
+        intakeFormData: formData,
+        intakeFormCompleted: true,
+        intakeFormLastUpdated: Date.now(),
+      });
       Alert.alert('Success', 'Your information has been saved securely!');
       onClose();
     } catch (error) {
-      console.error(error);
-      Alert.alert('Error', 'There was an issue saving your information.');
+      console.error('Error saving intake form:', error);
+      Alert.alert(
+        'Error',
+        'There was an issue saving to the server, but your data is saved locally.',
+      );
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -399,8 +433,16 @@ END:VCARD`;
 
               {/* Buttons */}
               <View style={styles.buttonRow}>
-                <Pressable style={styles.submitButton} onPress={handleSubmit}>
-                  <Text style={styles.buttonText}>Submit</Text>
+                <Pressable
+                  style={[styles.submitButton, isSaving && styles.disabledButton]}
+                  onPress={handleSubmit}
+                  disabled={isSaving}
+                >
+                  {isSaving ? (
+                    <ActivityIndicator color="#fff" />
+                  ) : (
+                    <Text style={styles.buttonText}>Submit</Text>
+                  )}
                 </Pressable>
 
                 <Pressable style={styles.generateQRButton} onPress={handleGenerateQR}>
