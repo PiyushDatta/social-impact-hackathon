@@ -40,6 +40,20 @@ type ChatSession = {
   createdAt: number;
 };
 
+type UserProfile = {
+  uid: string;
+  email: string;
+  name: string;
+  photo?: string;
+  createdAt?: number;
+};
+
+type AddUserResponse = {
+  success: boolean;
+  isNewUser: boolean;
+  profile: UserProfile;
+};
+
 /**
  * Hook that manages server calls and local secure storage of conversation IDs for this device.
  */
@@ -127,6 +141,47 @@ export function useServerApi() {
       console.error('Failed to save chat session to SecureStoreWrapper', err);
     }
   }, []);
+
+  /**
+   * Add or update a user in the database
+   */
+  const addUser = useCallback(
+    async (profile: {
+      uid: string;
+      email: string;
+      name: string;
+      photo?: string;
+    }): Promise<AddUserResponse> => {
+      if (!profile.uid || !profile.email || !profile.name) {
+        const msg = 'User profile must include uid, email, and name';
+        if (Platform.OS === 'web') alert(msg);
+        else Alert.alert('Error', msg);
+        throw new Error(msg);
+      }
+      setLoading(true);
+      try {
+        const res = await fetch(`${SERVER_URL}/auth/add_user`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(profile),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          const errMsg = data?.error || `Server error: ${res.status}`;
+          if (Platform.OS === 'web') alert(errMsg);
+          else Alert.alert('Error', errMsg);
+          throw new Error(errMsg);
+        }
+        return data as AddUserResponse;
+      } catch (err: any) {
+        console.error('addUser error', err);
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [],
+  );
 
   // ==================== Call API (Voice) ====================
 
@@ -341,6 +396,8 @@ export function useServerApi() {
     conversationIds,
     chatSession,
     loading,
+    // Auth operations
+    addUser,
     // Voice call storage operations
     loadConversationIds,
     listConversations,
