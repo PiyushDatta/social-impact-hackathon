@@ -4,9 +4,10 @@ export const colors = {
   secondaryText: '#fff',
   tertiaryText: '#8D8D8D',
   //buttons
-  primaryButton: '#2F2F2F',
+  primaryButton: '#545497',
   //original bgs
-  primaryBg: '#fff',
+  primaryBg: '#F3F3FD',
+  secondaryBG: '#ffff',
   //shades
   white: '#fff',
   offwhite: '#E4E4E4',

@@ -1,6 +1,30 @@
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
+const { width } = Dimensions.get('window');
+const isSmallScreen = width < 768;
 
 export const styles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  centeredContainer: {
+    width: '100%',
+    maxWidth: 600,
+    maxHeight: '90%',
+    backgroundColor: '#F3F3FD',
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: 20,
+    paddingBottom: 40,
+  },
   overlayContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -9,33 +33,53 @@ export const styles = StyleSheet.create({
   },
   overlayContent: {
     width: '85%',
-    backgroundColor: 'white',
+    maxWidth: 600,
+    backgroundColor: 'F3F3FD',
     borderRadius: 10,
     padding: 20,
   },
+  // Close icon in top right corner
+  closeIconContainer: {
+    position: 'absolute',
+    top: 15,
+    right: 15,
+    zIndex: 10,
+    padding: 5,
+  },
+  closeIcon: {
+    fontSize: 24,
+    color: '#545497',
+    fontWeight: 'bold',
+  },
   title: {
-    fontSize: 18,
+    fontSize: isSmallScreen ? 18 : 24,
     fontWeight: 'bold',
     marginBottom: 15,
+    marginTop: 10,
     textAlign: 'center',
+    color: '#545497',
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
+    // borderWidth: 1,
+    // borderColor: '#ccc',
     borderRadius: 8,
     padding: 10,
     marginBottom: 12,
+    fontSize: isSmallScreen ? 14 : 16,
+    height: 45,
+    backgroundColor: '#fff',
+    color: '#545497',
   },
   submitButton: {
-    backgroundColor: '#3b82f6',
-    padding: 10,
+    backgroundColor: '#545497',
+    padding: isSmallScreen ? 12 : 15,
     borderRadius: 8,
-    flex: 1,
-    marginRight: 5,
+    alignItems: 'center',
+    marginTop: 20,
   },
   closeButton: {
     backgroundColor: '#ef4444',
-    padding: 10,
+    padding: isSmallScreen ? 10 : 15,
     borderRadius: 8,
     flex: 1,
     marginLeft: 5,
@@ -44,45 +88,61 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#fff',
     fontWeight: '600',
+    fontSize: isSmallScreen ? 14 : 16,
   },
   label: {
-    fontSize: 14,
+    fontSize: isSmallScreen ? 14 : 16,
     fontWeight: '500',
     marginBottom: 6,
     marginTop: 12,
+    color: '#545497',
   },
   pickerContainer: {
-    borderWidth: 1,
-    borderColor: '#ccc',
+    // borderWidth: 1,
+    // borderColor: '#ccc',
     borderRadius: 8,
+    marginBottom: 12,
+    height: 45,
+    justifyContent: 'center',
+    overflow: 'hidden',
+    backgroundColor: '#fff',
+  },
+  picker: {
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+    height: 45,
+    color: '#545497',
+  },
+  checkboxGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
     marginBottom: 12,
   },
   checkbox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#ccc',
+    // borderWidth: 1,
+    // borderColor: '#ccc',
     borderRadius: 6,
     padding: 10,
     marginBottom: 8,
+    marginRight: 8,
     backgroundColor: '#fff',
+    width: isSmallScreen ? '48%' : 'auto',
+    minWidth: isSmallScreen ? 0 : 150,
+  },
+  checkboxText: {
+    color: '#545497',
   },
   checkedBox: {
-    backgroundColor: '#4CAF50',
-    borderColor: '#4CAF50',
+    backgroundColor: '#DBDBFC',
+    borderColor: '#DBDBFC',
   },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    paddingTop: 50,
-  },
-  scrollContent: {
-    padding: 20,
-    paddingBottom: 40,
+  checkedBoxText: {
+    color: '#545497',
   },
   qrContainer: {
     alignItems: 'center',
-    padding: 20,
+    padding: isSmallScreen ? 15 : 20,
     backgroundColor: '#f8f9fa',
     borderRadius: 12,
     marginVertical: 20,
@@ -90,10 +150,10 @@ export const styles = StyleSheet.create({
     borderColor: '#dee2e6',
   },
   qrTitle: {
-    fontSize: 20,
+    fontSize: isSmallScreen ? 18 : 20,
     fontWeight: 'bold',
     marginBottom: 15,
-    color: '#333',
+    color: '#545497',
   },
   qrCodeWrapper: {
     padding: 15,
@@ -104,8 +164,8 @@ export const styles = StyleSheet.create({
   qrInstructions: {
     marginTop: 10,
     textAlign: 'center',
-    color: '#666',
-    fontSize: 14,
+    color: '#545497',
+    fontSize: isSmallScreen ? 12 : 14,
   },
   copySection: {
     width: '100%',
@@ -115,10 +175,10 @@ export const styles = StyleSheet.create({
     borderTopColor: '#dee2e6',
   },
   copyLabel: {
-    fontSize: 14,
+    fontSize: isSmallScreen ? 12 : 14,
     fontWeight: '600',
     marginBottom: 8,
-    color: '#495057',
+    color: '#545497',
   },
   dataBox: {
     backgroundColor: '#e9ecef',
@@ -128,8 +188,8 @@ export const styles = StyleSheet.create({
     maxHeight: 80,
   },
   dataText: {
-    fontSize: 11,
-    color: '#495057',
+    fontSize: isSmallScreen ? 10 : 11,
+    color: '#545497',
     fontFamily: 'monospace',
   },
   copyButton: {
@@ -138,17 +198,20 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
   },
+  // Generate QR styled as a link
   generateQRButton: {
-    backgroundColor: '#28a745',
-    padding: 15,
-    borderRadius: 8,
-    flex: 1,
-    marginHorizontal: 5,
+    padding: 10,
     alignItems: 'center',
+    marginTop: 15,
+  },
+  generateQRText: {
+    color: '#545497',
+    fontSize: isSmallScreen ? 14 : 16,
+    textDecorationLine: 'underline',
+    fontWeight: '500',
   },
   buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
     marginTop: 20,
   },
 });

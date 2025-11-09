@@ -1,3 +1,4 @@
+// IntakeFormModal.tsx
 import { Picker } from '@react-native-picker/picker';
 import { useEffect, useState } from 'react';
 import {
@@ -46,15 +47,6 @@ interface FormData {
   voucherConnection: string;
   connectedAgency: string;
   additionalInfo: string;
-}
-
-interface EssentialData {
-  name: string;
-  dob: string;
-  phone: string;
-  email: string;
-  contact: string;
-  services: string[];
 }
 
 export default function IntakeFormModal({ visible, onClose }: IntakeFormModalProps) {
@@ -114,10 +106,12 @@ export default function IntakeFormModal({ visible, onClose }: IntakeFormModalPro
   };
 
   const generateEssentialData = (): string => {
+    // Create a vCard format - opens in contacts/notes apps
     const name = `${formData.firstName} ${formData.lastName}`.trim() || formData.nickName;
     const services = formData.interestedServices.join('; ') || 'None selected';
     const location = formData.partOfTown.join('; ') || 'Not specified';
 
+    // vCard 3.0 format - most compatible with phones
     const vCard = `BEGIN:VCARD
 VERSION:3.0
 FN:${name}
@@ -134,8 +128,10 @@ END:VCARD`;
 
   const handleGenerateQR = async () => {
     try {
+      // Save full data to secure storage
       await SecureStoreWrapper.setItemAsync('intakeFormData', JSON.stringify(formData));
 
+      // Generate essential data for QR
       const essentialData = generateEssentialData();
       setQrData(essentialData);
       setShowQRCode(true);
@@ -166,225 +162,254 @@ END:VCARD`;
   return (
     <Modal animationType="slide" transparent visible={visible} onRequestClose={onClose}>
       <View style={styles.modalContainer}>
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
-        >
-          <View style={styles.overlayContent}>
-            <Text style={styles.title}>Global Intake Form</Text>
+        <View style={styles.centeredContainer}>
+          {/* Close Icon in top right */}
+          <TouchableOpacity style={styles.closeIconContainer} onPress={onClose}>
+            <Text style={styles.closeIcon}>✕</Text>
+          </TouchableOpacity>
 
-            {/* Personal Info */}
-            <TextInput
-              style={styles.input}
-              placeholder="First Name"
-              value={formData.firstName}
-              onChangeText={text => handleChange('firstName', text)}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Last Name"
-              value={formData.lastName}
-              onChangeText={text => handleChange('lastName', text)}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Nickname / Preferred Name"
-              value={formData.nickName}
-              onChangeText={text => handleChange('nickName', text)}
-            />
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollContent}
+            keyboardShouldPersistTaps="handled"
+          >
+            <View style={styles.overlayContent}>
+              <Text style={styles.title}>Global Intake Form</Text>
 
-            <Text style={styles.label}>Pronouns</Text>
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={formData.pronouns}
-                onValueChange={value => handleChange('pronouns', value)}
-              >
-                <Picker.Item label="Select pronouns" value="" />
-                <Picker.Item label="she/her" value="she/her" />
-                <Picker.Item label="he/him" value="he/him" />
-                <Picker.Item label="they/them" value="they/them" />
-                <Picker.Item label="Other" value="other" />
-              </Picker>
-            </View>
+              {/* Personal Info */}
+              <TextInput
+                style={styles.input}
+                placeholder="First Name"
+                placeholderTextColor="#AAAAAA"
+                value={formData.firstName}
+                onChangeText={text => handleChange('firstName', text)}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Last Name"
+                placeholderTextColor="#AAAAAA"
+                value={formData.lastName}
+                onChangeText={text => handleChange('lastName', text)}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Nickname / Preferred Name"
+                placeholderTextColor="#AAAAAA"
+                value={formData.nickName}
+                onChangeText={text => handleChange('nickName', text)}
+              />
 
-            <TextInput
-              style={styles.input}
-              placeholder="Date of Birth (MM/DD/YYYY)"
-              value={formData.dateOfBirth}
-              onChangeText={text => handleChange('dateOfBirth', text)}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Current Age"
-              value={formData.currentAge}
-              onChangeText={text => handleChange('currentAge', text)}
-              keyboardType="numeric"
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Phone Number"
-              value={formData.phoneNumber}
-              onChangeText={text => handleChange('phoneNumber', text)}
-              keyboardType="phone-pad"
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Email Address"
-              value={formData.email}
-              onChangeText={text => handleChange('email', text)}
-              keyboardType="email-address"
-            />
-
-            <Text style={styles.label}>Best way to reach you</Text>
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={formData.bestContact}
-                onValueChange={value => handleChange('bestContact', value)}
-              >
-                <Picker.Item label="Select option" value="" />
-                <Picker.Item label="Call" value="call" />
-                <Picker.Item label="Text" value="text" />
-                <Picker.Item label="Email" value="email" />
-              </Picker>
-            </View>
-
-            <Text style={styles.label}>Is it okay to leave a voicemail?</Text>
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={formData.voicemail}
-                onValueChange={value => handleChange('voicemail', value)}
-              >
-                <Picker.Item label="Select option" value="" />
-                <Picker.Item label="Yes" value="yes" />
-                <Picker.Item label="No" value="no" />
-              </Picker>
-            </View>
-
-            <Text style={styles.label}>Language you are most comfortable with</Text>
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={formData.language}
-                onValueChange={value => handleChange('language', value)}
-              >
-                <Picker.Item label="Select language" value="" />
-                <Picker.Item label="English" value="english" />
-                <Picker.Item label="Spanish" value="spanish" />
-                <Picker.Item label="Other" value="other" />
-              </Picker>
-            </View>
-
-            <TextInput
-              style={styles.input}
-              placeholder="Current Living Situation"
-              value={formData.currentLivingSituation}
-              onChangeText={text => handleChange('currentLivingSituation', text)}
-              multiline
-            />
-
-            <TextInput
-              style={styles.input}
-              placeholder="Sleeping Location / Duration"
-              value={formData.sleepingLocation}
-              onChangeText={text => handleChange('sleepingLocation', text)}
-              multiline
-            />
-
-            <Text style={styles.label}>Part of town mostly stayed in this month</Text>
-            {[
-              'West LA',
-              'San Fernando Valley',
-              'Antelope Valley',
-              'San Gabriel Valley',
-              'Central LA',
-              'DTLA',
-              'South LA',
-              'East LA',
-              'South Bay',
-              'In CA, outside LA',
-              'Out of CA',
-              'Unknown',
-              'Decline',
-            ].map(option => (
-              <TouchableOpacity
-                key={option}
-                onPress={() => toggleCheckbox('partOfTown', option)}
-                style={[
-                  styles.checkbox,
-                  formData.partOfTown?.includes(option) && styles.checkedBox,
-                ]}
-              >
-                <Text style={{ color: formData.partOfTown?.includes(option) ? '#fff' : '#000' }}>
-                  {option}
-                </Text>
-              </TouchableOpacity>
-            ))}
-
-            <Text style={styles.label}>Services you are interested in</Text>
-            {[
-              'Essential Items',
-              'Shelter Resources',
-              'Case Management',
-              'Health & Wellness',
-              'Education',
-              'Employment',
-              'Pregnant & Parenting',
-            ].map(option => (
-              <TouchableOpacity
-                key={option}
-                onPress={() => toggleCheckbox('interestedServices', option)}
-                style={[
-                  styles.checkbox,
-                  formData.interestedServices?.includes(option) && styles.checkedBox,
-                ]}
-              >
-                <Text
-                  style={{
-                    color: formData.interestedServices?.includes(option) ? '#fff' : '#000',
-                  }}
+              <Text style={styles.label}>Pronouns</Text>
+              <View style={styles.pickerContainer}>
+                <Picker
+                  selectedValue={formData.pronouns}
+                  onValueChange={value => handleChange('pronouns', value)}
+                  style={styles.picker}
                 >
-                  {option}
-                </Text>
-              </TouchableOpacity>
-            ))}
-            {showQRCode && (
-              <View style={styles.qrContainer}>
-                <Text style={styles.qrTitle}>📱 Your Form QR Code</Text>
-                <View style={styles.qrCodeWrapper}>
-                  <QRCode value={qrData} size={220} backgroundColor="white" />
-                </View>
-                <Text style={styles.qrInstructions}>
-                  Scan this code to share your essential info
-                </Text>
-
-                <View style={styles.copySection}>
-                  <Text style={styles.copyLabel}>Or copy the data:</Text>
-                  <View style={styles.dataBox}>
-                    <Text style={styles.dataText} numberOfLines={3}>
-                      {qrData}
-                    </Text>
-                  </View>
-                  <Pressable style={styles.copyButton} onPress={handleCopyData}>
-                    <Text style={styles.buttonText}>📋 Copy to Clipboard</Text>
-                  </Pressable>
-                </View>
+                  <Picker.Item label="Select pronouns" value="" />
+                  <Picker.Item label="she/her" value="she/her" />
+                  <Picker.Item label="he/him" value="he/him" />
+                  <Picker.Item label="they/them" value="they/them" />
+                  <Picker.Item label="Other" value="other" />
+                </Picker>
               </View>
-            )}
 
-            <View style={styles.buttonRow}>
-              <Pressable style={styles.submitButton} onPress={handleSubmit}>
-                <Text style={styles.buttonText}>Submit</Text>
-              </Pressable>
+              <TextInput
+                style={styles.input}
+                placeholder="Date of Birth (MM/DD/YYYY)"
+                placeholderTextColor="#AAAAAA"
+                value={formData.dateOfBirth}
+                onChangeText={text => handleChange('dateOfBirth', text)}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Current Age"
+                placeholderTextColor="#AAAAAA"
+                value={formData.currentAge}
+                onChangeText={text => handleChange('currentAge', text)}
+                keyboardType="numeric"
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Phone Number"
+                placeholderTextColor="#AAAAAA"
+                value={formData.phoneNumber}
+                onChangeText={text => handleChange('phoneNumber', text)}
+                keyboardType="phone-pad"
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Email Address"
+                placeholderTextColor="#AAAAAA"
+                value={formData.email}
+                onChangeText={text => handleChange('email', text)}
+                keyboardType="email-address"
+              />
 
-              <Pressable style={styles.generateQRButton} onPress={handleGenerateQR}>
-                <Text style={styles.buttonText}>Generate QR</Text>
-              </Pressable>
+              <Text style={styles.label}>Best way to reach you</Text>
+              <View style={styles.pickerContainer}>
+                <Picker
+                  selectedValue={formData.bestContact}
+                  onValueChange={value => handleChange('bestContact', value)}
+                  style={styles.picker}
+                >
+                  <Picker.Item label="Select option" value="" />
+                  <Picker.Item label="Call" value="call" />
+                  <Picker.Item label="Text" value="text" />
+                  <Picker.Item label="Email" value="email" />
+                </Picker>
+              </View>
 
-              <Pressable style={styles.closeButton} onPress={onClose}>
-                <Text style={styles.buttonText}>Close</Text>
-              </Pressable>
+              <Text style={styles.label}>Is it okay to leave a voicemail?</Text>
+              <View style={styles.pickerContainer}>
+                <Picker
+                  selectedValue={formData.voicemail}
+                  onValueChange={value => handleChange('voicemail', value)}
+                  style={styles.picker}
+                >
+                  <Picker.Item label="Select option" value="" />
+                  <Picker.Item label="Yes" value="yes" />
+                  <Picker.Item label="No" value="no" />
+                </Picker>
+              </View>
+
+              <Text style={styles.label}>Language you are most comfortable with</Text>
+              <View style={styles.pickerContainer}>
+                <Picker
+                  selectedValue={formData.language}
+                  onValueChange={value => handleChange('language', value)}
+                  style={styles.picker}
+                >
+                  <Picker.Item label="Select language" value="" />
+                  <Picker.Item label="English" value="english" />
+                  <Picker.Item label="Spanish" value="spanish" />
+                  <Picker.Item label="Other" value="other" />
+                </Picker>
+              </View>
+
+              <TextInput
+                style={styles.input}
+                placeholder="Current Living Situation"
+                placeholderTextColor="#AAAAAA"
+                value={formData.currentLivingSituation}
+                onChangeText={text => handleChange('currentLivingSituation', text)}
+                multiline
+              />
+
+              <TextInput
+                style={styles.input}
+                placeholder="Sleeping Location / Duration"
+                placeholderTextColor="#AAAAAA"
+                value={formData.sleepingLocation}
+                onChangeText={text => handleChange('sleepingLocation', text)}
+                multiline
+              />
+
+              <Text style={styles.label}>Part of town mostly stayed in this month</Text>
+              <View style={styles.checkboxGrid}>
+                {[
+                  'West LA',
+                  'San Fernando Valley',
+                  'Antelope Valley',
+                  'San Gabriel Valley',
+                  'Central LA',
+                  'DTLA',
+                  'South LA',
+                  'East LA',
+                  'South Bay',
+                  'In CA, outside LA',
+                  'Out of CA',
+                  'Unknown',
+                  'Decline',
+                ].map(option => (
+                  <TouchableOpacity
+                    key={option}
+                    onPress={() => toggleCheckbox('partOfTown', option)}
+                    style={[
+                      styles.checkbox,
+                      formData.partOfTown?.includes(option) && styles.checkedBox,
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.checkboxText,
+                        formData.partOfTown?.includes(option) && styles.checkedBoxText,
+                      ]}
+                    >
+                      {option}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <Text style={styles.label}>Services you are interested in</Text>
+              <View style={styles.checkboxGrid}>
+                {[
+                  'Essential Items',
+                  'Shelter Resources',
+                  'Case Management',
+                  'Health & Wellness',
+                  'Education',
+                  'Employment',
+                  'Pregnant & Parenting',
+                ].map(option => (
+                  <TouchableOpacity
+                    key={option}
+                    onPress={() => toggleCheckbox('interestedServices', option)}
+                    style={[
+                      styles.checkbox,
+                      formData.interestedServices?.includes(option) && styles.checkedBox,
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.checkboxText,
+                        formData.interestedServices?.includes(option) && styles.checkedBoxText,
+                      ]}
+                    >
+                      {option}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              {/* QR Code Display */}
+              {showQRCode && (
+                <View style={styles.qrContainer}>
+                  <Text style={styles.qrTitle}>📱 Your Form QR Code</Text>
+                  <View style={styles.qrCodeWrapper}>
+                    <QRCode value={qrData} size={220} backgroundColor="white" />
+                  </View>
+                  <Text style={styles.qrInstructions}>Scan this code to save as contact</Text>
+
+                  {/* Copy-Paste Section */}
+                  <View style={styles.copySection}>
+                    <Text style={styles.copyLabel}>Or copy the data:</Text>
+                    <View style={styles.dataBox}>
+                      <ScrollView style={{ maxHeight: 80 }}>
+                        <Text style={styles.dataText}>{qrData}</Text>
+                      </ScrollView>
+                    </View>
+                    <Pressable style={styles.copyButton} onPress={handleCopyData}>
+                      <Text style={styles.buttonText}>📋 Copy to Clipboard</Text>
+                    </Pressable>
+                  </View>
+                </View>
+              )}
+
+              {/* Buttons */}
+              <View style={styles.buttonRow}>
+                <Pressable style={styles.submitButton} onPress={handleSubmit}>
+                  <Text style={styles.buttonText}>Submit</Text>
+                </Pressable>
+
+                <Pressable style={styles.generateQRButton} onPress={handleGenerateQR}>
+                  <Text style={styles.generateQRText}>Generate QR Code</Text>
+                </Pressable>
+              </View>
             </View>
-          </View>
-        </ScrollView>
+          </ScrollView>
+        </View>
       </View>
     </Modal>
   );

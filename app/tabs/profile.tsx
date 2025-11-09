@@ -21,7 +21,6 @@ export default function Profile() {
           <Text style={styles.name}>John Doe</Text>
           <Text style={styles.email}>john.doe@example.com</Text>
         </View>
-
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Settings</Text>
 
@@ -45,9 +44,8 @@ export default function Profile() {
             <Text style={styles.settingText}>Help & Support</Text>
           </Pressable>
         </View>
-
         <Pressable style={styles.logoutButton} onPress={handleLogout}>
-          <Text style={styles.logoutText}>Logout</Text>
+          <Text style={styles.logoutText}>Log Out</Text>
         </Pressable>
       </View>
 

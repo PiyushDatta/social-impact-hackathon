@@ -3,12 +3,12 @@ import { colors } from './theme';
 
 export const styles = StyleSheet.create({
   card: {
-    backgroundColor: colors.primaryBg,
+    backgroundColor: colors.secondaryBG,
     borderRadius: 12,
     padding: 16,
     marginHorizontal: 16,
     marginVertical: 8,
-    shadowColor: colors.black,
+    shadowColor: colors.primaryText,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -29,7 +29,7 @@ export const styles = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 2,
     borderColor: colors.darkGrey,
-    backgroundColor: colors.primaryBg,
+    backgroundColor: colors.secondaryBG,
     alignItems: 'center',
     justifyContent: 'center',
   },

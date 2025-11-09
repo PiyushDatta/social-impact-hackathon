@@ -59,15 +59,14 @@ export const styles = StyleSheet.create({
     fontSize: 16,
   },
   logoutButton: {
-    backgroundColor: colors.primaryButton,
-    padding: 15,
-    borderRadius: 8,
+    padding: 10,
     alignItems: 'center',
+    marginTop: 15,
   },
   logoutText: {
-    color: colors.secondaryText,
-    fontSize: 16,
-    fontWeight: '600',
+    color: '#545497',
+    textDecorationLine: 'underline',
+    fontWeight: '500',
   },
   globalButton: {
     backgroundColor: colors.primaryButton,
