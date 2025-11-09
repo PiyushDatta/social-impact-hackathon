@@ -15,17 +15,22 @@ export const styles = StyleSheet.create({
   filterButton: {
     paddingVertical: 6,
     paddingHorizontal: 12,
-    borderRadius: 4,
-    backgroundColor: '#ddd',
+    borderRadius: 8,
+    backgroundColor: colors.offwhite,
     marginRight: 8,
     marginBottom: 8,
+    borderWidth: 2,
+    borderColor: colors.primaryButton,
   },
   activeButton: {
     backgroundColor: colors.primaryButton,
+    borderWidth: 2,
+    borderColor: colors.primaryButton,
+    borderRadius: 8,
   },
   filterText: {
     fontSize: 14,
-    color: '#333',
+    color: colors.primaryText,
   },
   activeText: {
     fontWeight: '600',

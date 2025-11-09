@@ -3,7 +3,7 @@ import { colors } from './theme';
 
 export const styles = StyleSheet.create({
   page: {
-    backgroundColor: colors.primaryBg,
+    backgroundColor: '#f9edecff', //card bg
     borderRadius: 12,
     padding: 16,
     marginHorizontal: 16,
@@ -13,6 +13,9 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    marginTop: 60,
+    marginLeft: 120, //padding
+    marginRight: 120,
   },
   container: {
     flexDirection: 'column',
@@ -45,14 +48,9 @@ export const styles = StyleSheet.create({
   },
   closeButtonText: {
     fontSize: 14,
-    color: colors.darkGrey,
+    color: '#cc2626ff',
     lineHeight: 20,
     marginBottom: 12,
-  },
-  header: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
   },
   closeButton: {
     color: '#fff',
