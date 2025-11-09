@@ -4,7 +4,6 @@ import { colors } from './theme';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.primaryBg,
   },
   content: {
     padding: 20,

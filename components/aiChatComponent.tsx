@@ -1,7 +1,9 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { useServerApi } from '../hooks/useServerApi';
 import { styles } from '../styles/aiChatComponentStyles';
+import { gradients } from '../styles/theme';
 
 type Message = {
   id: string;
@@ -66,79 +68,89 @@ export function ChatComponent() {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Chat Assistant</Text>
-        {chatSession && (
-          <Pressable style={styles.newChatButton} onPress={handleNewChat}>
-            <Text style={styles.newChatButtonText}>New Chat</Text>
-          </Pressable>
-        )}
-      </View>
+    <LinearGradient
+      colors={gradients.primary.colors} // orange → white
+      start={gradients.primary.start} // top center
+      end={gradients.primary.end} // bottom center
+      style={{ flex: 1 }} // fill the entire screen
+    >
+      <View style={styles.container}>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Chat Assistant</Text>
+          {chatSession && (
+            <Pressable style={styles.newChatButton} onPress={handleNewChat}>
+              <Text style={styles.newChatButtonText}>New Chat</Text>
+            </Pressable>
+          )}
+        </View>
 
-      {/* Messages */}
-      <ScrollView
-        ref={scrollViewRef}
-        style={styles.messagesContainer}
-        contentContainerStyle={styles.messagesContent}
-      >
-        {messages.length === 0 && (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyStateText}>Start a conversation</Text>
-            <Text style={styles.emptyStateSubtext}>
-              Ask me anything about homeless youth resources
-            </Text>
-          </View>
-        )}
+        {/* Messages */}
+        <ScrollView
+          ref={scrollViewRef}
+          style={styles.messagesContainer}
+          contentContainerStyle={styles.messagesContent}
+        >
+          {messages.length === 0 && (
+            <View style={styles.emptyState}>
+              <Text style={styles.emptyStateText}>Start a conversation</Text>
+              <Text style={styles.emptyStateSubtext}>
+                Ask me anything about homeless youth resources
+              </Text>
+            </View>
+          )}
 
-        {messages.map(message => (
-          <View
-            key={message.id}
-            style={[
-              styles.messageBubble,
-              message.role === 'user' ? styles.userBubble : styles.assistantBubble,
-            ]}
-          >
-            <Text
+          {messages.map(message => (
+            <View
+              key={message.id}
               style={[
-                styles.messageText,
-                message.role === 'user' ? styles.userText : styles.assistantText,
+                styles.messageBubble,
+                message.role === 'user' ? styles.userBubble : styles.assistantBubble,
               ]}
             >
-              {message.content}
-            </Text>
-          </View>
-        ))}
+              <Text
+                style={[
+                  styles.messageText,
+                  message.role === 'user' ? styles.userText : styles.assistantText,
+                ]}
+              >
+                {message.content}
+              </Text>
+            </View>
+          ))}
 
-        {isSending && (
-          <View style={[styles.messageBubble, styles.assistantBubble]}>
-            <ActivityIndicator size="small" color="#666" />
-          </View>
-        )}
-      </ScrollView>
+          {isSending && (
+            <View style={[styles.messageBubble, styles.assistantBubble]}>
+              <ActivityIndicator size="small" color="#666" />
+            </View>
+          )}
+        </ScrollView>
 
-      {/* Input */}
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          value={inputText}
-          onChangeText={setInputText}
-          placeholder="Type your message..."
-          placeholderTextColor="#999"
-          multiline
-          maxLength={500}
-          editable={!isSending && !loading}
-          onSubmitEditing={handleSend}
-        />
-        <Pressable
-          style={[styles.sendButton, (!inputText.trim() || isSending) && styles.sendButtonDisabled]}
-          onPress={handleSend}
-          disabled={!inputText.trim() || isSending}
-        >
-          <Text style={styles.sendButtonText}>Send</Text>
-        </Pressable>
+        {/* Input */}
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            value={inputText}
+            onChangeText={setInputText}
+            placeholder="Type your message..."
+            placeholderTextColor="#999"
+            multiline
+            maxLength={500}
+            editable={!isSending && !loading}
+            onSubmitEditing={handleSend}
+          />
+          <Pressable
+            style={[
+              styles.sendButton,
+              (!inputText.trim() || isSending) && styles.sendButtonDisabled,
+            ]}
+            onPress={handleSend}
+            disabled={!inputText.trim() || isSending}
+          >
+            <Text style={styles.sendButtonText}>Send</Text>
+          </Pressable>
+        </View>
       </View>
-    </View>
+    </LinearGradient>
   );
 }

@@ -14,7 +14,6 @@ export const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 600,
     maxHeight: '90%',
-    backgroundColor: '#F3F3FD',
     borderRadius: 10,
     overflow: 'hidden',
   },

@@ -63,3 +63,11 @@ export const mixins = {
     elevation: 3, // for Android
   },
 };
+
+export const gradients = {
+  primary: {
+    colors: ['#FDD1C1', '#FEFEFE'] as const,
+    start: { x: 0.5, y: 0 }, // top center
+    end: { x: 0.5, y: 1 }, // bottom center
+  },
+};
