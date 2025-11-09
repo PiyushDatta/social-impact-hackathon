@@ -1,16 +1,13 @@
-// styles/transcriptDetailStyles.ts
 import { StyleSheet } from 'react-native';
+import { colors } from './theme';
 
 export const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: '#fff',
   },
   header: {
     marginBottom: 24,
     paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
   },
   title: {
     fontSize: 24,
@@ -66,15 +63,15 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
     padding: 12,
     borderRadius: 8,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f0d5d1ff',
   },
   agentMessage: {
-    backgroundColor: '#e3f2fd',
+    backgroundColor: '#cfb8c5ff',
     marginLeft: 0,
     marginRight: 40,
   },
   userMessage: {
-    backgroundColor: '#f3e5f5',
+    backgroundColor: colors.lightOrange, //client
     marginLeft: 40,
     marginRight: 0,
   },
@@ -96,5 +93,17 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     color: '#333',
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    paddingTop: 50, // Account for status bar
+    gap: 8,
+  },
+  backButtonText: {
+    fontSize: 16,
+    color: '#482424',
+    fontWeight: '500',
   },
 });
