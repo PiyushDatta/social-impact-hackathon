@@ -7,7 +7,6 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: colors.primaryBg,
   },
   title: {
     fontSize: 28,
@@ -23,6 +22,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 15,
     marginBottom: 15,
     fontSize: 16,
+    backgroundColor: colors.offwhite,
   },
   button: {
     width: '100%',

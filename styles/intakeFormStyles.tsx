@@ -16,6 +16,7 @@ export const styles = StyleSheet.create({
     maxHeight: '90%',
     borderRadius: 10,
     overflow: 'hidden',
+    backgroundColor: '#F3F3FD',
   },
   scrollView: {
     flex: 1,

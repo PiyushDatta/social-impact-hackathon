@@ -1,8 +1,10 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Alert, Platform, Pressable, Text, TextInput, View } from 'react-native';
 import { useAuth } from '../context/authContext';
 import { styles } from '../styles/loginStyles';
+import { gradients } from '../styles/theme';
 
 export default function Login() {
   const router = useRouter();
@@ -38,61 +40,68 @@ export default function Login() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome to Doorwai</Text>
-      <Text style={styles.subtitle}>Sign in to continue</Text>
+    <LinearGradient
+      colors={gradients.primary.colors}
+      start={gradients.primary.start}
+      end={gradients.primary.end}
+      style={{ flex: 1 }}
+    >
+      <View style={styles.container}>
+        <Text style={styles.title}>Doorwai</Text>
+        <Text style={styles.subtitle}>Sign in to continue</Text>
 
-      <View style={styles.form}>
-        {error ? (
-          <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>{error}</Text>
+        <View style={styles.form}>
+          {error ? (
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorText}>{error}</Text>
+            </View>
+          ) : null}
+
+          <TextInput
+            style={styles.input}
+            placeholder="Username"
+            value={username}
+            onChangeText={setUsername}
+            autoCapitalize="none"
+            editable={!isLoading}
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            editable={!isLoading}
+          />
+
+          <Pressable
+            style={[styles.button, isLoading && styles.buttonDisabled]}
+            onPress={handleLogin}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>Sign In</Text>
+            )}
+          </Pressable>
+
+          <View style={styles.divider}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>OR</Text>
+            <View style={styles.dividerLine} />
           </View>
-        ) : null}
 
-        <TextInput
-          style={styles.input}
-          placeholder="Username"
-          value={username}
-          onChangeText={setUsername}
-          autoCapitalize="none"
-          editable={!isLoading}
-        />
-
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          editable={!isLoading}
-        />
-
-        <Pressable
-          style={[styles.button, isLoading && styles.buttonDisabled]}
-          onPress={handleLogin}
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.buttonText}>Sign In</Text>
-          )}
-        </Pressable>
-
-        <View style={styles.divider}>
-          <View style={styles.dividerLine} />
-          <Text style={styles.dividerText}>OR</Text>
-          <View style={styles.dividerLine} />
+          <Pressable
+            style={[styles.googleButton, isLoading && styles.buttonDisabled]}
+            onPress={handleGoogleLogin}
+            disabled={isLoading}
+          >
+            <Text style={styles.googleButtonText}>Continue with Google</Text>
+          </Pressable>
         </View>
-
-        <Pressable
-          style={[styles.googleButton, isLoading && styles.buttonDisabled]}
-          onPress={handleGoogleLogin}
-          disabled={isLoading}
-        >
-          <Text style={styles.googleButtonText}>Continue with Google</Text>
-        </Pressable>
       </View>
-    </View>
+    </LinearGradient>
   );
 }

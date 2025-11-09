@@ -4,17 +4,22 @@ import { colors } from './theme';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.primaryBg,
+    marginLeft: 200, //padding
+    marginRight: 200,
+    paddingTop: 80,
   },
   content: {
     padding: 20,
   },
   header: {
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#fbf4f3ff',
     padding: 30,
     borderRadius: 12,
     marginBottom: 20,
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 20,
   },
   avatar: {
     width: 80,
@@ -28,7 +33,7 @@ export const styles = StyleSheet.create({
   avatarText: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#fbf4f3ff',
   },
   name: {
     fontSize: 24,
@@ -40,10 +45,13 @@ export const styles = StyleSheet.create({
     color: colors.darkGrey,
   },
   section: {
-    backgroundColor: '#fff',
+    backgroundColor: '#fbf4f3ff',
     borderRadius: 12,
-    padding: 15,
+    padding: 40,
     marginBottom: 20,
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 20,
   },
   sectionTitle: {
     fontSize: 18,

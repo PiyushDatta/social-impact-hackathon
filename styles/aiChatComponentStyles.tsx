@@ -1,17 +1,17 @@
 import { StyleSheet } from 'react-native';
+import { colors } from './theme';
 
 export const styles = StyleSheet.create({
   container: {
     width: '70%',
     alignSelf: 'center', // center it horizontally
-    backgroundColor: '#fefefe',
+    backgroundColor: '#fbf4f3ff', //bg conversation
     flex: 1,
     padding: 20,
     borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 4, height: 4 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowRadius: 20,
     elevation: 3,
     marginBottom: 80,
   },
@@ -20,16 +20,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#fff', //new chat header
-    // borderBottomWidth: 1, remove bottom line
-    // borderBottomColor: '#e0e0e0',
-  },
-  card: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#fff', //new chat header
+    backgroundColor: '#fbf4f3ff', //new chat header
     // borderBottomWidth: 1, remove bottom line
     // borderBottomColor: '#e0e0e0',
   },
@@ -105,14 +96,14 @@ export const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     padding: 12,
-    backgroundColor: '#fff',
+    backgroundColor: '#fbf4f3ff',
     gap: 8,
   },
   input: {
     flex: 1,
     minHeight: 40,
     maxHeight: 100,
-    backgroundColor: '#f5f5f5', //input field
+    backgroundColor: colors.white, //input field
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 10,

@@ -3,16 +3,19 @@ import { colors } from './theme';
 
 export const styles = StyleSheet.create({
   card: {
-    backgroundColor: colors.secondaryBG,
+    backgroundColor: colors.secondaryBG, // Keep this for individual cards
     borderRadius: 12,
     padding: 16,
     marginHorizontal: 16,
     marginVertical: 8,
-    shadowColor: colors.primaryText,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
     elevation: 3,
+  },
+  pageTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#482424',
+    marginBottom: 16,
+    marginLeft: 16,
   },
   header: {
     flexDirection: 'row',

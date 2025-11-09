@@ -3,15 +3,15 @@ import { colors } from './theme';
 
 export const styles = StyleSheet.create({
   page: {
-    backgroundColor: '#f9edecff', //card bg
+    backgroundColor: '#fbf4f3ff', //card bg
     borderRadius: 12,
     padding: 16,
     marginHorizontal: 16,
     marginVertical: 8,
     shadowColor: colors.black,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 4, height: 4 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowRadius: 20,
     elevation: 3,
     marginTop: 60,
     marginLeft: 120, //padding
