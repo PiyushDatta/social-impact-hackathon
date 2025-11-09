@@ -4,7 +4,7 @@ export const colors = {
   secondaryText: '#fff',
   tertiaryText: '#8D8D8D',
   //buttons
-  primaryButton: '#545497',
+  primaryButton: '#8E7081', //545497
   //orange
   lightOrange: '#FDD2C2',
   //original bgs

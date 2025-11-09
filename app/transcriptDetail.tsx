@@ -1,7 +1,8 @@
 import { gradients } from '@/styles/theme';
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useTranscripts } from '../data/transcriptData';
 import { styles } from '../styles/transcriptDetailStyles';
 
@@ -37,6 +38,11 @@ export default function TranscriptDetail() {
       end={gradients.primary.end} // bottom center
       style={{ flex: 1 }} // make gradient fill the full screen
     >
+      {/* Back Button */}
+      <Pressable style={styles.backButton} onPress={() => router.push('/tabs/transcripts')}>
+        <Ionicons name="arrow-back" size={24} color="#482424" />
+        <Text style={styles.backButtonText}>Back to Transcripts</Text>
+      </Pressable>
       <ScrollView contentContainerStyle={styles.container}>
         {/* Header */}
         <View style={styles.header}>
@@ -73,7 +79,7 @@ export default function TranscriptDetail() {
             >
               <View style={styles.messageHeader}>
                 <Text style={styles.speaker}>
-                  {message.speaker === 'agent' ? '👤 Agent' : '🗣️ Client'}
+                  {message.speaker === 'agent' ? 'Agent' : 'Client'}
                 </Text>
                 <Text style={styles.timestamp}>{message.timestamp}</Text>
               </View>
