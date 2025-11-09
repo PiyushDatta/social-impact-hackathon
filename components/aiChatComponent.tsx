@@ -90,7 +90,7 @@ export function ChatComponent() {
         >
           {messages.length === 0 && (
             <View style={styles.emptyState}>
-              <Text style={styles.emptyStateText}>Start a conversation</Text>
+              <Text style={styles.emptyStateText}>Our Door’s Always Open</Text>
             </View>
           )}
 
@@ -126,7 +126,7 @@ export function ChatComponent() {
             style={styles.input}
             value={inputText}
             onChangeText={setInputText}
-            placeholder="Ask me anything about youth resources"
+            placeholder="Ask me anything, i'm here to helps"
             placeholderTextColor="#999"
             multiline
             maxLength={500}

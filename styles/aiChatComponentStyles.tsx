@@ -20,9 +20,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#fbf4f3ff', //new chat header
-    // borderBottomWidth: 1, remove bottom line
-    // borderBottomColor: '#e0e0e0',
+    backgroundColor: '#fbf4f3ff',
   },
   headerTitle: {
     fontSize: 18,
@@ -48,7 +46,8 @@ export const styles = StyleSheet.create({
   },
   emptyState: {
     flex: 1,
-    marginTop: 80,
+    marginTop: 60,
+    marginBottom: 60,
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 60,
