@@ -3,6 +3,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import InfoCard from '../../components/infoCard';
 import { useServerApi } from '../../hooks/useServerApi';
 import { styles } from '../../styles/infoCardStyles';
+import { colors } from '../../styles/theme';
 
 export default function InfoListScreen() {
   const { initiateCall } = useServerApi();
@@ -21,7 +22,7 @@ export default function InfoListScreen() {
   ];
 
   return (
-    <View style={{ flex: 1, padding: 16 }}>
+    <View style={{ flex: 1, padding: 16, backgroundColor: colors.primaryBg }}>
       <ScrollView>
         {cards.map(card => (
           <InfoCard key={card.id} id={card.id} title={card.title} onToggle={handleToggle} />
