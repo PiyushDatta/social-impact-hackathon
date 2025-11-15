@@ -1,4 +1,4 @@
-import * as AuthSession from 'expo-auth-session';
+import { makeRedirectUri } from 'expo-auth-session';
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 import React, { createContext, useContext, useEffect, useState } from 'react';
@@ -47,28 +47,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const { addUser, updateProfile, getProfile } = useServerApi();
 
-  const redirectUri = AuthSession.makeRedirectUri({
-    scheme: 'doorwai', // choose a scheme
+  // Construct redirect URI based on platform
+  // For mobile in Expo Go, use Expo's auth proxy
+  // For web, use the app scheme
+  const redirectUri = Platform.select({
+    web: makeRedirectUri({
+      scheme: 'socialimpacthackathon',
+    }),
+    // Use Expo's auth proxy for mobile (works with Expo Go)
+    default: 'https://auth.expo.io/@asyb/social-impact-hackathon',
   });
+
+  // Log for debugging
+  // console.log('Google Auth Redirect URI:', redirectUri);
+  // console.log('Platform:', Platform.OS);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     clientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID,
-    iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
-    androidClientId: process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID,
-    redirectUri,
+    // TODO(PiyushDatta): Uncomment these lines after verifying iOS and Android client IDs.
+    // iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
+    // androidClientId: process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID,
     scopes: ['profile', 'email'],
+    redirectUri: redirectUri,
   });
-
-  useEffect(() => {
-    console.log('=== GOOGLE AUTH DEBUG ===');
-    console.log('clientId:', process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID);
-    console.log('iosClientId:', process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID);
-    console.log('request:', request);
-    if (request) {
-      console.log('redirectUri:', request.redirectUri);
-    }
-    console.log('========================');
-  }, [request]);
 
   useEffect(() => {
     checkAuthStatus();
@@ -76,24 +77,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Handle Google Auth response with access token
   useEffect(() => {
-    (async () => {
-      console.log('Response type:', response?.type);
-
-      if (response?.type === 'success') {
-        const { authentication } = response;
-        console.log('Authentication:', authentication);
-
-        if (authentication?.accessToken) {
-          await handleGoogleAccessToken(authentication.accessToken);
-        }
-      } else if (response?.type === 'error') {
-        console.error('Google auth error:', response.error);
-        console.error('Error params:', response.params);
-        const msg = 'Google authentication failed. Please try again.';
-        if (Platform.OS === 'web') alert(msg);
-        else Alert.alert('Error', msg);
+    if (response?.type === 'success') {
+      const { authentication } = response;
+      if (authentication?.accessToken) {
+        handleGoogleAccessToken(authentication.accessToken);
       }
-    })();
+    } else if (response?.type === 'error') {
+      console.error('Google auth error:', response.error);
+      console.error('Error details:', JSON.stringify(response, null, 2));
+      const msg = `Google authentication failed: ${response.error?.message || 'Unknown error'}`;
+      if (Platform.OS === 'web') alert(msg);
+      else Alert.alert('Authentication Error', msg);
+    } else if (response?.type === 'cancel') {
+      console.log('User cancelled Google authentication');
+    }
   }, [response]);
 
   const checkAuthStatus = async () => {
@@ -151,19 +148,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const handleGoogleAccessToken = async (accessToken: string): Promise<boolean> => {
     try {
       setIsLoading(true);
-
       // Fetch user info from Google using access token
       const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
-
       if (!userInfoResponse.ok) {
         throw new Error('Failed to fetch user info from Google');
       }
-
       const userInfo = await userInfoResponse.json();
-      console.log('User info from Google:', userInfo);
-
       // Convert to UserProfile format
       const userProfile: UserProfile = {
         uid: userInfo.id,
@@ -171,7 +163,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         name: userInfo.name,
         photo: userInfo.picture,
       };
-
       // Call backend to add/update user in database
       try {
         const result = await addUser(userProfile);
