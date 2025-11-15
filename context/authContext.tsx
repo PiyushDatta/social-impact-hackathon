@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { Alert, AppState } from 'react-native';
+import { useServerApi } from '../hooks/useServerApi';
 import { SecureStoreWrapper } from '../utils/secureStoreWrapper';
 
 interface AuthContextType {
@@ -11,18 +12,30 @@ interface AuthContextType {
   profileData: any;
   loginWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
+  updateProfileData: (data: Partial<ProfileData>) => Promise<void>;
+}
+
+interface ProfileData {
+  userId: string;
+  onboardingComplete?: boolean;
+  createdAt?: number;
+  updatedAt?: number;
+  [key: string]: any; // Allow any additional profile fields
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 const USER_KEY = 'auth_user';
 const PROFILE_KEY = 'auth_profile';
+const PROFILE_DATA_KEY = 'doorwai_profile_data';
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [profileData, setProfileData] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  // Import API functions from useServerApi
+  const { addUser, updateProfile, getProfile } = useServerApi();
 
   const router = useRouter();
   const backendURL = process.env.EXPO_PUBLIC_BACKEND_URL;
@@ -183,6 +196,23 @@ export function AuthProvider({ children }) {
     }
   }
 
+  const updateProfileData = async (data: Partial<ProfileData>) => {
+    if (!user) {
+      throw new Error('User must be authenticated to update profile');
+    }
+    try {
+      // Update profile on server
+      const updatedProfile = await updateProfile(user.uid, data);
+      // Update local state
+      setProfileData(updatedProfile);
+      // Update local storage
+      await SecureStoreWrapper.setItemAsync(PROFILE_DATA_KEY, JSON.stringify(updatedProfile));
+    } catch (error) {
+      console.error('Error updating profile data:', error);
+      throw error;
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -192,6 +222,7 @@ export function AuthProvider({ children }) {
         profileData,
         loginWithGoogle,
         logout,
+        updateProfileData,
       }}
     >
       {children}
